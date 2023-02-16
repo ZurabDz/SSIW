@@ -93,8 +93,12 @@ def get_parser() -> CfgNode:
     cfg.gpus_num = args.gpus_num
     cfg.save_folder = args.save_folder
 
-    cfg.user_label = args.user_label
-    cfg.new_definitions = args.new_definitions
+    # TODO: this is dumb but testing forward right now
+    with open('cmp_dataset_desc.json', 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    cfg.user_label = ['background','facade','window','door', 'cornice', 'sill', 'balcony', 'blind','deco', 'molding', 'pillar', 'shop', 'unlabel']
+    # cfg.user_label = args.user_label
+    cfg.new_definitions = data
     return cfg
 
 
@@ -107,8 +111,8 @@ def get_prediction(embs, gt_embs_list):
         score = embs[b,...]
         score = score.unsqueeze(0)
         emb = gt_embs_list
-        emb = emb / emb.norm(dim=1, keepdim=True)
-        score = score / score.norm(dim=1, keepdim=True)
+        emb /= emb.norm(dim=1, keepdim=True)
+        score /= score.norm(dim=1, keepdim=True)
         score = score.permute(0, 2, 3, 1) @ emb.t()
         # [N, H, W, num_cls] You maybe need to remove the .t() based on the shape of your saved .npy
         score = score.permute(0, 3, 1, 2)  # [N, num_cls, H, W]
@@ -304,7 +308,8 @@ def visual_segments(segments, rgb):
   
 def organize_images(args, local_rank):
     imgs_dir = args.root_dir
-    imgs_list = glob.glob(imgs_dir + f'/*.{args.img_file_type}')
+    # TODO: for now hardcoded
+    imgs_list = glob.glob('/home/penguin/SSIW/data/base/*.jpg')
     imgs_list.sort()
     num_devices = args.gpus_num
 
