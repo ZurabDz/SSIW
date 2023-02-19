@@ -140,8 +140,10 @@ def single_scale_single_crop_cuda(model,
     image_crop = torch.from_numpy(image.transpose((2, 0, 1))).float()
     normalize_img(image_crop, mean, std)
     image_crop = image_crop.unsqueeze(0).cuda()
+    # print('IMAGE CROP: ', image_crop)
     with torch.no_grad():
         emb, _, _ = model(inputs=image_crop, label_space=['universal'])
+        print('IMAGE MODEL EMBED: ', emb)
         logit = get_prediction(emb, gt_embs_list)
     logit_universal = F.softmax(logit * 100, dim=1).squeeze()
 
@@ -226,7 +228,8 @@ def do_test(args, local_rank):
     ckpt_path = args.model_path
     checkpoint = torch.load(ckpt_path, map_location='cpu')['state_dict']
     ckpt_filter = {k: v for k, v in checkpoint.items() if 'criterion.0.criterion.weight' not in k}
-    model.load_state_dict(ckpt_filter, strict=False)
+    maybe_errors = model.load_state_dict(ckpt_filter, strict=False)
+    print(maybe_errors)
 
 
     if args.user_label:
@@ -259,6 +262,7 @@ def test_single(args, imgs_list, local_rank, model, gt_embs_list):
         
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         
+        print("LOADED IMAGE NAME: ", rgb_path)
         rgb = cv2.imread(rgb_path, -1)[:, :, ::-1]
         image_resized = resize_by_scaled_short_side(rgb, args.base_size, 1)
         h, w, _ = rgb.shape

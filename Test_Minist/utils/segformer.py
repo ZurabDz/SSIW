@@ -882,8 +882,10 @@ class SegFormer(nn.Module):
             return
         if os.path.isfile(imagenet_ckpt_fpath):
             print('===========> loading pretrained models {}'.format(imagenet_ckpt_fpath))
+            print("\n\n\n\n\n===============================================================LOADING pretrained model")
             self.encoder.init_weights(pretrained=imagenet_ckpt_fpath)
         else:
+            print("+" * 300)
             # logger.info(pretrained)
             print('cannot find ImageNet models path, use random initialization')
             raise RuntimeError('no pretrained models found at {}'.format(imagenet_ckpt_fpath))
