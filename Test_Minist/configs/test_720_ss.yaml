@@ -8,8 +8,8 @@ TEST:
   scales: [1.0]  
   
   test_gpu: [0, ]
-  model_path: 'models/segformer_7data.pth'
-  emb_path: 'models/universal_cat2vec.npy'
+  model_path: '/home/penguin/SSIW/data/model/segformer_7data.pth'
+  emb_path: '/home/penguin/SSIW/data/model/universal_cat2vec.npy'
 
   num_model_classes: 512
   num_train_classes: 194
