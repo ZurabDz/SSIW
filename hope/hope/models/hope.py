@@ -3,11 +3,13 @@ import pytorch_lightning as pl
 from hope.utils.constants import INITIAL_MODEL_PATH, CLASS_DEFINITIONS_PATH
 import torch
 from hope.utils.embed import create_embs_from_names
+from hope.utils.transform_utils import resize_by_scaled_short_side, single_scale_single_crop_cuda
 import json
 
 
 class HopeModel(pl.LightningModule):
     def __init__(self, num_classes: int = 512, initial_model_path: str = INITIAL_MODEL_PATH) -> None:
+        super().__init__()
         self.model = SegModel(criterions=None,
                      num_classes=num_classes,
                      load_imagenet_model=False, imagenet_ckpt_fpath='')
@@ -16,19 +18,24 @@ class HopeModel(pl.LightningModule):
         self.model = torch.nn.DataParallel(self.model)
         checkpoint = torch.load(initial_model_path, map_location='cpu')['state_dict']
         ckpt_filter = {k: v for k, v in checkpoint.items() if 'criterion.0.criterion.weight' not in k}
-        maybe_errors = self.model.load_state_dict(ckpt_filter, strict=False)
-        user_label = ['background','facade','window','door', 'cornice', 'sill',
+        self.maybe_errors = self.model.load_state_dict(ckpt_filter, strict=False)
+        self.user_label = ['background','facade','window','door', 'cornice', 'sill',
          'balcony', 'blind','deco', 'molding', 'pillar', 'shop', 'unlabel']
 
         with open(CLASS_DEFINITIONS_PATH, 'r', encoding='utf-8') as f:
             new_definitions = json.load(f)
 
-        self.gt_embs_list = create_embs_from_names(user_label, new_definitions).float()
+        self.gt_embs_list = create_embs_from_names(self.user_label, new_definitions).float()
         self.criterion = torch.nn.CrossEntropyLoss()
         
 
-    def forward(self):
-        ...
+    def forward(self, rgb, metadata=None):
+        image_resized = resize_by_scaled_short_side(rgb, 720, 1)
+        h, w, _ = rgb.shape
+        out_logit, emb = single_scale_single_crop_cuda(self.model, image_resized, h, w,
+         gt_embs_list=self.gt_embs_list, args=None)
+
+        return out_logit, emb
 
     def configure_optimizers(self):
         ...
