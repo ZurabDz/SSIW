@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+# TODO: add other dependencies as well
 
 setup(
    name='hope',
