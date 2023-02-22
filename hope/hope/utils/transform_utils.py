@@ -107,7 +107,6 @@ def single_scale_single_crop_cuda(model,
     # print('IMAGE CROP: ', image_crop)
     with torch.no_grad():
         emb, _, _ = model(inputs=image_crop, label_space=['universal'])
-        print('IMAGE MODEL EMBED: ', emb)
         logit = get_prediction(emb, gt_embs_list)
     logit_universal = F.softmax(logit * 100, dim=1).squeeze()
 
