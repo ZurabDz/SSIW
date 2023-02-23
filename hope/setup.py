@@ -8,4 +8,11 @@ setup(
    packages=find_packages(
       exclude=['examples', 'scripts'], 
    ),
+   install_requires=[
+            "torch",
+            "cv2",
+            "timm",
+            "mmcv",
+            "mmsegmentation"
+   ],
 )
