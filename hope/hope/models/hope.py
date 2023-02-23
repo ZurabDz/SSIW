@@ -7,7 +7,22 @@ import json
 from hope.utils.embed import get_prediction
 from torch.optim.lr_scheduler import LambdaLR
 import torch.nn.functional as F
+import torch.nn as nn
 
+def replace_sync_batchnorm(model):
+    for name, module in reversed(model._modules.items()):
+        if len(list(module.children())) > 0:
+            # Recursively call the function on the child modules
+            replace_sync_batchnorm(module)
+        if isinstance(module, nn.SyncBatchNorm):
+            # Replace SyncBatchNorm with BatchNorm
+            bn_module = nn.BatchNorm2d(module.num_features,
+                                        eps=module.eps,
+                                        momentum=module.momentum,
+                                        affine=module.affine,
+                                        track_running_stats=module.track_running_stats)
+            model._modules[name] = bn_module
+    return model
 
 class HopeModel(pl.LightningModule):
     def __init__(self, num_classes: int = 512, initial_model_path: str = INITIAL_MODEL_PATH) -> None:
@@ -25,6 +40,7 @@ class HopeModel(pl.LightningModule):
         self.maybe_errors = self.model.load_state_dict(
             ckpt_filter, strict=False)
 
+        self.model = replace_sync_batchnorm(self.model)
         with open(CLASS_DEFINITIONS_PATH, 'r', encoding='utf-8') as f:
             new_definitions = json.load(f)
 
@@ -37,6 +53,7 @@ class HopeModel(pl.LightningModule):
 
     def forward(self, image_crop, mask):
         with torch.no_grad():
+            image_crop = image_crop.squeeze(0) # TODO:  Need custom collate before that its a fix ;d
             emb, _, _ = self.model(
                 inputs=image_crop, label_space=['universal'])
             logit = get_prediction(emb, self.gt_embs_list)
