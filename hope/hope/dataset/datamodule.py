@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 class CMPFacadeDataModule(pl.LightningDataModule):
-    def __init__(self, root_dir: str, batch_size: Optional[int] = 4, num_workers: Optional[int] = 2):
+    def __init__(self, root_dir: str, batch_size: Optional[int] = 4, num_workers: Optional[int] = 4):
         super().__init__()
         if isinstance(root_dir, Path):
             self.root_dir = str(root_dir)
