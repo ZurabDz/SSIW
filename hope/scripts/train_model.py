@@ -21,7 +21,7 @@ args = parser.parse_args()
 
 model = HopeModel(num_classes=512, initial_model_path=args.original_model_path, class_definitions=args.label_desc_json_path)
 
-data_module = CMPFacadeDataModule(args.root_data, batch_size=args.batch_size)
+data_module = CMPFacadeDataModule(args.root_data, class_definitions=args.label_desc_json_path, batch_size=args.batch_size)
 
 trainer = pl.Trainer(accelerator='gpu', gradient_clip_val=1, max_epochs=args.max_epochs,
                      precision=args.precision, 
