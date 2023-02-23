@@ -1,8 +1,10 @@
 import subprocess
+import zipfile
 
-# token = "16pmWKSZYvmuocHCXbcMKA8HVlfKvFoet"
-# download_command = f"gdown {token}"
-unzip_command = "unzip data.zip"
+token = "16pmWKSZYvmuocHCXbcMKA8HVlfKvFoet"
+download_command = f"gdown {token}"
 
-# subprocess.run(download_command.split())
-subprocess.run(unzip_command.split())
+subprocess.run(download_command.split())
+
+with zipfile.ZipFile("data.zip", 'r') as zip_ref:
+    zip_ref.extractall(".")
