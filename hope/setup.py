@@ -13,6 +13,7 @@ setup(
             "mmcv",
             "mmsegmentation",
             "pytorch-lightning",
-            "clip-anytorch"
+            "clip-anytorch",
+            "gdown"
    ],
 )
