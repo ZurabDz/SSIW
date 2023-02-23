@@ -1,3 +1,9 @@
 ## Here we are trying to finetune existing checkpoint on CMP dataset 
 
-### Hope directory is/will be stand alone package. Clone repo and install it ``` pip install hope/ ``` 
+#### Steps for running training:
+
+- `conda create -n new_env python=3.8`
+- `git clone "repo"`
+- `cd "repo"/ && pip install .`
+- `cd scripts/ && python download_stuff.py`
+- `bash train.bash`
