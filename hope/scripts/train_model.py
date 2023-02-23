@@ -13,6 +13,10 @@ parser.add_argument('--precision', type=int)
 parser.add_argument('--max_epochs', type=int)
 parser.add_argument('--batch_size', type=int)
 parser.add_argument('--root_data', type=str)
+parser.add_argument('--original_model_path', type=str, required=True)
+parser.add_argument('--label_desc_json_path', type=str, required=True)
+
+
 args = parser.parse_args()
 
 model = HopeModel()
