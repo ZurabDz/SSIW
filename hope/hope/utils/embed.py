@@ -1,8 +1,4 @@
 import torch
-import numpy as np
-import os
-import os.path as osp
-import cv2
 
 def create_embs_from_names(labels, other_descriptions=None):
     import clip
