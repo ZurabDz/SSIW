@@ -71,7 +71,8 @@ class HopeModel(pl.LightningModule):
     def training_step(self, train_batch, batch_idx):
         features, labels = train_batch
         logit, mask = self.forward(features, labels)
-
+        logit.requires_grad_(True)
+        mask.requires_grad_(True)
         loss = self.criterion(logit, mask)
         self.log('train', loss)
 
