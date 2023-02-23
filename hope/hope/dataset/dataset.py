@@ -13,10 +13,10 @@ from hope.utils.constants import CLASS_DEFINITIONS_PATH
 
 
 class CMPFacadeDataset(Dataset):
-    def __init__(self, root_dir: str) -> None:
+    def __init__(self, root_dir: str, class_definitions=CLASS_DEFINITIONS_PATH) -> None:
         self.root_dir = root_dir
         self.xmls = glob(osp.join(self.root_dir, '*.xml'))
-        with open(CLASS_DEFINITIONS_PATH, 'r', encoding='utf-8') as f:
+        with open(class_definitions, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
         self.index_to_label = {}

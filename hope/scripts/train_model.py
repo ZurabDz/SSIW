@@ -19,7 +19,7 @@ parser.add_argument('--label_desc_json_path', type=str, required=True)
 
 args = parser.parse_args()
 
-model = HopeModel()
+model = HopeModel(num_classes=512, initial_model_path=args.original_model_path, class_definitions=args.label_desc_json_path)
 
 data_module = CMPFacadeDataModule(args.root_data, batch_size=args.batch_size)
 

@@ -25,7 +25,8 @@ def replace_sync_batchnorm(model):
     return model
 
 class HopeModel(pl.LightningModule):
-    def __init__(self, num_classes: int = 512, initial_model_path: str = INITIAL_MODEL_PATH) -> None:
+    def __init__(self, num_classes: int = 512, initial_model_path: str = INITIAL_MODEL_PATH, 
+    class_definitions: str = CLASS_DEFINITIONS_PATH) -> None:
         super().__init__()
         self.model = SegModel(criterions=None,
                               num_classes=num_classes,
@@ -41,7 +42,7 @@ class HopeModel(pl.LightningModule):
             ckpt_filter, strict=False)
 
         self.model = replace_sync_batchnorm(self.model)
-        with open(CLASS_DEFINITIONS_PATH, 'r', encoding='utf-8') as f:
+        with open(class_definitions, 'r', encoding='utf-8') as f:
             new_definitions = json.load(f)
 
         self.user_label = list(new_definitions.keys())

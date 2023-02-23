@@ -7,14 +7,14 @@ from pathlib import Path
 
 
 class CMPFacadeDataModule(pl.LightningDataModule):
-    def __init__(self, root_dir: str, batch_size: Optional[int] = 4, num_workers: Optional[int] = 4):
+    def __init__(self, root_dir: str, class_definitions=None, batch_size: Optional[int] = 4, num_workers: Optional[int] = 4):
         super().__init__()
         if isinstance(root_dir, Path):
             self.root_dir = str(root_dir)
 
         self.batch_size = batch_size
         self.num_workers = num_workers
-        self.cmp_facade_train = CMPFacadeDataset(root_dir)
+        self.cmp_facade_train = CMPFacadeDataset(root_dir, class_definitions)
         # self.custom_collate_fn = MyCollator(root_dir)
 
     def train_dataloader(self):
