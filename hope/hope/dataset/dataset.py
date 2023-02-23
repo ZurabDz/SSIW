@@ -9,11 +9,10 @@ from hope.utils.transform_utils import (
     resize_by_scaled_short_side, get_imagenet_mean_std, pad_to_crop_sz, normalize_img)
 import numpy as np
 import json
-from hope.utils.constants import CLASS_DEFINITIONS_PATH
 
 
 class CMPFacadeDataset(Dataset):
-    def __init__(self, root_dir: str, class_definitions=CLASS_DEFINITIONS_PATH) -> None:
+    def __init__(self, root_dir: str, class_definitions=None) -> None:
         self.root_dir = root_dir
         self.xmls = glob(osp.join(self.root_dir, '*.xml'))
         with open(class_definitions, 'r', encoding='utf-8') as f:

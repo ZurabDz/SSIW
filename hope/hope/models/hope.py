@@ -1,6 +1,5 @@
 from .segmodel import SegModel
 import pytorch_lightning as pl
-from hope.utils.constants import INITIAL_MODEL_PATH, CLASS_DEFINITIONS_PATH
 import torch
 from hope.utils.embed import create_embs_from_names
 import json
@@ -25,8 +24,8 @@ def replace_sync_batchnorm(model):
     return model
 
 class HopeModel(pl.LightningModule):
-    def __init__(self, num_classes: int = 512, initial_model_path: str = INITIAL_MODEL_PATH, 
-    class_definitions: str = CLASS_DEFINITIONS_PATH) -> None:
+    def __init__(self, num_classes: int = 512, initial_model_path=None, 
+        class_definitions= None) -> None:
         super().__init__()
         self.model = SegModel(criterions=None,
                               num_classes=num_classes,
