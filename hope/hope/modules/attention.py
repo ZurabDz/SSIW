@@ -1,6 +1,6 @@
 import torch.nn as nn
 import math
-from timm.models.layers import DropPath, to_2tuple, trunc_normal_
+from timm.models.layers import trunc_normal_
 
 
 class DWConv(nn.Module):
